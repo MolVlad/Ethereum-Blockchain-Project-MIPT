@@ -21,11 +21,6 @@ LEFT=740
 WIDTH=190
 DELIM=10
 
-#Is neccery to connect elements in scene for event handling.
-class Communicate(QObject):
-
-    closeApp = pyqtSignal()
-    rollDice = pyqtSignal()
 
 class Player(QGraphicsPixmapItem):
     def __init__(self, *args, **kwargs):
@@ -161,8 +156,6 @@ class Dice(QGraphicsPixmapItem):
     def __init__(self, *args, **kwargs):
         super(Dice, self).__init__(*args, **kwargs)
 
-        self.signals = Communicate()
-
         self.load_images()
 
     def load_images(self):
@@ -283,6 +276,11 @@ class MainWindow(QMainWindow):
         self.button_yes.clicked.connect(self.yes_handler)
         self.button_no.clicked.connect(self.no_handler)
 
+        #Timer for handling events from contract
+        self.timer = QTimer()
+        self.timer.setInterval(5)
+        self.timer.timeout.connect(self.timer_handler)
+        self.timer.start()
 
         self.setCentralWidget(view)
         self.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -292,6 +290,9 @@ class MainWindow(QMainWindow):
 
     def quit(self):
         self.close()
+
+    def timer_handler(self):
+        print("smth")
 
     def yes_handler(self):
         pass
@@ -310,15 +311,9 @@ class MainWindow(QMainWindow):
         self.player_2.set_position((self.player_2.get_position() + 1) % 12)
         self.player_2.DrawPlayer2(self.player_2.get_position())
 
-
-
     def initGame(self, player_1, player_2):
         #TODO Handle starting game event from contract
         #TODO Init vars of pl_1 and pl_2. pl_1 is our local player as default
-        pass
-
-    def showStartDialog(self):
-        #TODO: Add 2 buttons and 2 fields for name,
         pass
 
 if __name__ == '__main__':
