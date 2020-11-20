@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 
 import sys
 import os
+from random import randint
 
 WINDOW_WIDTH  = 950
 WINDOW_HEIGHT = 720
@@ -103,12 +104,15 @@ class MainWindow(QMainWindow):
         self.scene.addItem(self.dice)
         self.dice.DrawDice(0)
         
-        #NOT WORKING SCENE <-> WIDGETS
         #Button for new move
-        self.button_newMove = QPushButton('ROLL THE DICE', self)
-        self.button_newMove.move(825, 600)
-        self.scene.addWidget(self.button_newMove)
-        
+        self.button_newMove = QPushButton("ROLL THE DICE")
+        self.button_newMove.move(790, 650)
+        self.button_newMove.resize(100, 50)
+        proxy_button = self.scene.addWidget(self.button_newMove)
+
+        #Connecting button with newMove
+        self.button_newMove.clicked.connect(self.newMove)
+
         self.setCentralWidget(view)
         self.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.setWindowTitle(WINDOW_NAME)
@@ -121,7 +125,8 @@ class MainWindow(QMainWindow):
     def newMove(self):
         #TODO Handle changes from etherium contract
         #TODO Check order of moves
-        pass
+        self.dice.DrawDice(randint(0, 6))
+        
 
     def initGame(self, player_1, player_2):
         #TODO Handle starting game event from contract
@@ -130,6 +135,7 @@ class MainWindow(QMainWindow):
 
     def showStartDialog(self):
         #TODO: Add 2 buttons and 2 fields for name, 
+        pass
 
 if __name__ == '__main__':
 
