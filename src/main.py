@@ -27,13 +27,13 @@ class Player:
 
     def get_name(self):
         return self._name
-    
+
     def get_addr(self):
         return self._addr
 
     def get_money(self):
         return self._money
-    
+
     def get_position(self):
         return self._position
 
@@ -56,7 +56,7 @@ class Player:
         _IsActionRequired = action
 
 class Dice(QGraphicsPixmapItem):
-    
+
     def __init__(self, *args, **kwargs):
         super(Dice, self).__init__(*args, **kwargs)
 
@@ -73,7 +73,7 @@ class Dice(QGraphicsPixmapItem):
     def DrawDice(self, number):
         self.setPixmap(self.numbers_images[number])
         self.setPos(QPointF(825, 600))
-    
+
 class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -92,18 +92,23 @@ class MainWindow(QMainWindow):
         #Filling the background
         felt = QBrush(QPixmap(os.path.join('../res','background-pattern.png')))
         self.scene.setBackgroundBrush(felt)
-        
+
         #Painting the field
         field = QGraphicsPixmapItem()
         field.setPixmap(QPixmap(os.path.join('../res','field.png')))
         field.setPos(QPointF(10, 5))
         self.scene.addItem(field)
-        
+
         #Working with dice
         self.dice = Dice()
         self.scene.addItem(self.dice)
         self.dice.DrawDice(0)
-        
+
+        self.log = QPlainTextEdit("")
+        self.log.move(740, 150)
+        self.log.resize(190, 320)
+        self.log.setReadOnly(1)
+        self.scene.addWidget(self.log)
         #Button for new move
         self.button_newMove = QPushButton("ROLL THE DICE")
         self.button_newMove.move(790, 650)
@@ -116,7 +121,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(view)
         self.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.setWindowTitle(WINDOW_NAME)
-        
+
         self.show()
 
     def quit(self):
@@ -126,7 +131,7 @@ class MainWindow(QMainWindow):
         #TODO Handle changes from etherium contract
         #TODO Check order of moves
         self.dice.DrawDice(randint(0, 6))
-        
+
 
     def initGame(self, player_1, player_2):
         #TODO Handle starting game event from contract
@@ -134,7 +139,7 @@ class MainWindow(QMainWindow):
         pass
 
     def showStartDialog(self):
-        #TODO: Add 2 buttons and 2 fields for name, 
+        #TODO: Add 2 buttons and 2 fields for name,
         pass
 
 if __name__ == '__main__':
