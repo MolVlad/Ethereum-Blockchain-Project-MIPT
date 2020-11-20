@@ -103,6 +103,44 @@ class Player(QGraphicsPixmapItem):
         if(pos_num == 11):
             self.setPos(QPointF(650, 475))
 
+    def DrawPlayer2(self, pos_num):
+        self.setPixmap(self.players_images[1])
+
+        if(pos_num == 0):
+            self.setPos(QPointF(650, 590))
+
+        if(pos_num == 1):
+            self.setPos(QPointF(475, 590))
+
+        if(pos_num == 2):
+            self.setPos(QPointF(300, 590))
+
+        if(pos_num == 3):
+            self.setPos(QPointF(125, 590))
+
+        if(pos_num == 4):
+            self.setPos(QPointF(125, 415))
+
+        if(pos_num == 5):
+            self.setPos(QPointF(125, 240))
+
+        if(pos_num == 6):
+            self.setPos(QPointF(125, 65))
+
+        if(pos_num == 7):
+            self.setPos(QPointF(300, 65))
+
+        if(pos_num == 8):
+            self.setPos(QPointF(475, 65))
+
+        if(pos_num == 9):
+            self.setPos(QPointF(650, 65))
+
+        if(pos_num == 10):
+            self.setPos(QPointF(650, 240))
+
+        if(pos_num == 11):
+            self.setPos(QPointF(650, 415))
 
 
     def load_images(self):
@@ -165,9 +203,13 @@ class MainWindow(QMainWindow):
         self.player_2 = Player()
 
         self.scene.addItem(self.player_1)
+        self.scene.addItem(self.player_2)
+
         self.player_1.DrawPlayer1(0)
+        self.player_2.DrawPlayer2(0)
+
         #Players
-        player1_sample_text = "Player1"+", color = "+"red"+"\n"+"$200"
+        player1_sample_text = "Player1"+", color = "+"red"+"\n"+str(self.player_1.get_money())+"$"
         self.player1_banner = QLabel(player1_sample_text)
         self.player1_banner.move(LEFT, TOP)
         self.player1_banner.resize(WIDTH, 40)
@@ -175,13 +217,14 @@ class MainWindow(QMainWindow):
         self.player1_banner.setAlignment(Qt.AlignCenter)
         self.scene.addWidget(self.player1_banner)
 
-        player2_sample_text = "Player2"+", color = "+"blue"+"\n"+"$200"
+        player2_sample_text = "Player2"+", color = "+"green"+"\n"+str(self.player_2.get_money())+"$"
         self.player2_banner = QLabel(player2_sample_text)
         self.player2_banner.move(LEFT, TOP + 40 + DELIM)
         self.player2_banner.resize(WIDTH, 40)
         self.player2_banner.setWordWrap(1)
         self.player2_banner.setAlignment(Qt.AlignCenter)
         self.scene.addWidget(self.player2_banner)
+
         #Game log
         log_sample_text = ("Vlados at position 1 : Toll station, pay 50$ to Phil\n"
                            "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
@@ -197,11 +240,13 @@ class MainWindow(QMainWindow):
                            "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
                            "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
                            "Vlados at position 1 : Finished his way (looooh, pi*or)\n")
+
         self.log = QPlainTextEdit(log_sample_text)
         self.log.move(LEFT, TOP + 90 + DELIM*2)
         self.log.resize(WIDTH, 350)
         self.log.setReadOnly(1)
         self.scene.addWidget(self.log)
+
         #Question
         question_sample_text = "Do you want to purchase avenue X?"
         self.question = QLabel(question_sample_text)
@@ -210,6 +255,7 @@ class MainWindow(QMainWindow):
         self.question.setWordWrap(1)
         self.question.setAlignment(Qt.AlignCenter)
         self.scene.addWidget(self.question)
+
         #Buttons for answers to the question
         self.button_no = QPushButton("NO")
         self.button_no.move(LEFT, TOP + 480 + DELIM*4)
@@ -227,8 +273,11 @@ class MainWindow(QMainWindow):
         self.button_newMove.resize(WIDTH, 50)
         proxy_button = self.scene.addWidget(self.button_newMove)
 
-        #Connecting button with newMove
-        self.button_newMove.clicked.connect(self.newMove)
+        #Connecting buttons with functions
+        self.button_newMove.clicked.connect(self.newMove_handler)
+        self.button_yes.clicked.connect(self.yes_handler)
+        self.button_no.clicked.connect(self.no_handler)
+
 
         self.setCentralWidget(view)
         self.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -239,13 +288,24 @@ class MainWindow(QMainWindow):
     def quit(self):
         self.close()
 
-    def newMove(self):
+    def yes_handler(self):
+        pass
+
+    def no_handler(self):
+        pass
+    
+    def newMove_handler(self):
         #TODO Handle changes from etherium contract
         #TODO Check order of moves
         self.dice.DrawDice(randint(0, 6))
-        print(self.player_1.get_position())
+
         self.player_1.set_position((self.player_1.get_position() + 1) % 12)
         self.player_1.DrawPlayer1(self.player_1.get_position())
+
+        self.player_2.set_position((self.player_2.get_position() + 1) % 12)
+        self.player_2.DrawPlayer2(self.player_2.get_position())
+
+
 
     def initGame(self, player_1, player_2):
         #TODO Handle starting game event from contract
