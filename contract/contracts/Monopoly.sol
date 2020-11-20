@@ -269,6 +269,12 @@ contract Monopoly
 			string memory message = string(abi.encodePacked("Toll station, pay 50$ to ", players[stations[players[whoseMove].position].owner].name));
 			emit actionHappened(players[whoseMove].name, players[whoseMove].position, message);
 		}
+
+		if (players[whoseMove].money < 0)
+		{
+			gameIsActive = false;
+			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Finished his way (looooh, pi*or)");
+		}
 	}
 
 	// check has this address already signed up for the game
