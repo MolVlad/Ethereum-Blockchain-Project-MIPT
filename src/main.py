@@ -344,6 +344,7 @@ if __name__ == '__main__':
     print("user_name="+USER_NAME)
     if (CONTRACT_ADDRESS == "" or USER_ADDRESS == "" or USER_NAME == ""):
         print(HELPMSG)
+        sys.exit(1)
 
     app = QApplication([])
     window = MainWindow()
