@@ -10,6 +10,11 @@ WINDOW_WIDTH  = 950
 WINDOW_HEIGHT = 720
 WINDOW_NAME = "MIPTopoly"
 
+TOP=20
+LEFT=740
+WIDTH=190
+DELIM=10
+
 #Is neccery to connect elements in scene for event handling.
 class Communicate(QObject):
 
@@ -71,8 +76,9 @@ class Dice(QGraphicsPixmapItem):
             self.numbers_images.append(n)
 
     def DrawDice(self, number):
+        SIZE=36
         self.setPixmap(self.numbers_images[number])
-        self.setPos(QPointF(825, 600))
+        self.setPos(QPointF(LEFT+WIDTH/2-SIZE/2, 600))
 
 class MainWindow(QMainWindow):
 
@@ -104,14 +110,22 @@ class MainWindow(QMainWindow):
         self.scene.addItem(self.dice)
         self.dice.DrawDice(0)
 
-        #Question
-        question_sample_text = "Do you want to purchase avenue X?"
-        self.question = QLabel(question_sample_text)
-        self.question.move(740, 490)
-        self.question.resize(190, 40)
-        self.question.setWordWrap(1)
-        self.question.setAlignment(Qt.AlignCenter)
-        self.scene.addWidget(self.question)
+        #Players
+        player1_sample_text = "Player1"+", color = "+"red"+"\n"+"$200"
+        self.player1 = QLabel(player1_sample_text)
+        self.player1.move(LEFT, TOP)
+        self.player1.resize(WIDTH, 40)
+        self.player1.setWordWrap(1)
+        self.player1.setAlignment(Qt.AlignCenter)
+        self.scene.addWidget(self.player1)
+
+        player2_sample_text = "Player2"+", color = "+"blue"+"\n"+"$200"
+        self.player2 = QLabel(player2_sample_text)
+        self.player2.move(LEFT, TOP + 40 + DELIM)
+        self.player2.resize(WIDTH, 40)
+        self.player2.setWordWrap(1)
+        self.player2.setAlignment(Qt.AlignCenter)
+        self.scene.addWidget(self.player2)
         #Game log
         log_sample_text = ("Vlados at position 1 : Toll station, pay 50$ to Phil\n"
                            "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
@@ -128,25 +142,33 @@ class MainWindow(QMainWindow):
                            "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
                            "Vlados at position 1 : Finished his way (looooh, pi*or)\n")
         self.log = QPlainTextEdit(log_sample_text)
-        self.log.move(740, 150)
-        self.log.resize(190, 320)
+        self.log.move(LEFT, TOP + 90 + DELIM*2)
+        self.log.resize(WIDTH, 350)
         self.log.setReadOnly(1)
         self.scene.addWidget(self.log)
+        #Question
+        question_sample_text = "Do you want to purchase avenue X?"
+        self.question = QLabel(question_sample_text)
+        self.question.move(LEFT, TOP + 440 + DELIM*3)
+        self.question.resize(WIDTH, 40)
+        self.question.setWordWrap(1)
+        self.question.setAlignment(Qt.AlignCenter)
+        self.scene.addWidget(self.question)
+        #Buttons for answers to the question
+        self.button_no = QPushButton("NO")
+        self.button_no.move(LEFT, TOP + 480 + DELIM*4)
+        self.button_no.resize(int((WIDTH - DELIM)/2), 50)
+        self.scene.addWidget(self.button_no)
+
+        self.button_yes = QPushButton("YES")
+        self.button_yes.move(int(LEFT + WIDTH/2 + DELIM/2), TOP + 480 + DELIM*4)
+        self.button_yes.resize(int((WIDTH - DELIM)/2), 50)
+        self.scene.addWidget(self.button_yes)
         #Button for new move
         self.button_newMove = QPushButton("ROLL THE DICE")
-        self.button_newMove.move(790, 650)
-        self.button_newMove.resize(100, 50)
+        self.button_newMove.move(LEFT, TOP + 550 + DELIM*5 + 30)
+        self.button_newMove.resize(WIDTH, 50)
         proxy_button = self.scene.addWidget(self.button_newMove)
-        #Buttons for answers to the question
-        self.button_yes = QPushButton("YES")
-        self.button_yes.move(840, 540)
-        self.button_yes.resize(90, 50)
-        self.scene.addWidget(self.button_yes)
-
-        self.button_no = QPushButton("NO")
-        self.button_no.move(740, 540)
-        self.button_no.resize(90, 50)
-        self.scene.addWidget(self.button_no)
 
         #Connecting button with newMove
         self.button_newMove.clicked.connect(self.newMove)
