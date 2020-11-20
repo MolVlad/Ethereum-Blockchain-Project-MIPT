@@ -5,10 +5,16 @@ from PyQt5.QtCore import *
 import sys
 import os
 from random import randint
+import sys, getopt
 
 WINDOW_WIDTH  = 950
 WINDOW_HEIGHT = 720
 WINDOW_NAME = "MIPTopoly"
+
+HELPMSG='main.py --contract-address=<addr> --user-address=<uaddr> --user-name=<name>'
+CONTRACT_ADDRESS = ""
+USER_ADDRESS = ""
+USER_NAME = ""
 
 TOP=20
 LEFT=740
@@ -176,7 +182,6 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
         view = QGraphicsView()
         self.scene = QGraphicsScene()
         view.setScene(self.scene)
@@ -209,7 +214,7 @@ class MainWindow(QMainWindow):
         self.player_2.DrawPlayer2(0)
 
         #Players
-        player1_sample_text = "Player1"+", color = "+"red"+"\n"+str(self.player_1.get_money())+"$"
+        player1_sample_text = USER_NAME+", color = "+"red"+"\n"+str(self.player_1.get_money())+"$"
         self.player1_banner = QLabel(player1_sample_text)
         self.player1_banner.move(LEFT, TOP)
         self.player1_banner.resize(WIDTH, 40)
@@ -293,7 +298,7 @@ class MainWindow(QMainWindow):
 
     def no_handler(self):
         pass
-    
+
     def newMove_handler(self):
         #TODO Handle changes from etherium contract
         #TODO Check order of moves
@@ -317,6 +322,28 @@ class MainWindow(QMainWindow):
         pass
 
 if __name__ == '__main__':
+
+    #Handle cmdline arguments
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],"hc:u:n:",["contract-address=","user-address=","user-name="])
+    except getopt.GetoptError:
+       print(HELPMSG)
+       sys.exit(2)
+    for opt, arg in opts:
+       if opt == '-h':
+          print(HELPMSG)
+          sys.exit()
+       elif opt in ("-c", "--contract-address"):
+          CONTRACT_ADDRESS = arg
+       elif opt in ("-u", "--user-address"):
+          USER_ADDRESS = arg
+       elif opt in ("-n", "--user-name"):
+          USER_NAME = arg
+    print("contract_address="+CONTRACT_ADDRESS)
+    print("user_address="+USER_ADDRESS)
+    print("user_name="+USER_NAME)
+    if (CONTRACT_ADDRESS == "" or USER_ADDRESS == "" or USER_NAME == ""):
+        print(HELPMSG)
 
     app = QApplication([])
     window = MainWindow()
