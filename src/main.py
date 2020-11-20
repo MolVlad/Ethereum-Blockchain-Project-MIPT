@@ -104,7 +104,30 @@ class MainWindow(QMainWindow):
         self.scene.addItem(self.dice)
         self.dice.DrawDice(0)
 
-        self.log = QPlainTextEdit("")
+        #Question
+        question_sample_text = "Do you want to purchase avenue X?"
+        self.question = QLabel(question_sample_text)
+        self.question.move(740, 490)
+        self.question.resize(190, 40)
+        self.question.setWordWrap(1)
+        self.question.setAlignment(Qt.AlignCenter)
+        self.scene.addWidget(self.question)
+        #Game log
+        log_sample_text = ("Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
+                           "Vlados at position 1 : Finished his way (looooh, pi*or)\n")
+        self.log = QPlainTextEdit(log_sample_text)
         self.log.move(740, 150)
         self.log.resize(190, 320)
         self.log.setReadOnly(1)
@@ -114,6 +137,16 @@ class MainWindow(QMainWindow):
         self.button_newMove.move(790, 650)
         self.button_newMove.resize(100, 50)
         proxy_button = self.scene.addWidget(self.button_newMove)
+        #Buttons for answers to the question
+        self.button_yes = QPushButton("YES")
+        self.button_yes.move(840, 540)
+        self.button_yes.resize(90, 50)
+        self.scene.addWidget(self.button_yes)
+
+        self.button_no = QPushButton("NO")
+        self.button_no.move(740, 540)
+        self.button_no.resize(90, 50)
+        self.scene.addWidget(self.button_no)
 
         #Connecting button with newMove
         self.button_newMove.clicked.connect(self.newMove)
