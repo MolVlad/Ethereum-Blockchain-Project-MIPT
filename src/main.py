@@ -21,44 +21,96 @@ class Communicate(QObject):
     closeApp = pyqtSignal()
     rollDice = pyqtSignal()
 
-class Player:
-    def __init__(self, name, addr, money, position, movesInPrison, IsActionRequired):
-        self._name = name
-        self._addr = addr
-        self._money = money
-        self._position = position
-        self._movesInPrison = movesInPrison
-        self._IsActionRequired = IsActionRequired
+class Player(QGraphicsPixmapItem):
+    def __init__(self, *args, **kwargs):
+        super(Player, self).__init__(*args, **kwargs)
+
+        self.name = "somename"
+        self.addr = None
+        self.money = 200
+        self.position = 0
+        self.movesInPrison = 0
+        self.IsActionRequired = False
+
+        self.load_images();
 
     def get_name(self):
-        return self._name
+        return self.name
 
     def get_addr(self):
-        return self._addr
+        return self.addr
 
     def get_money(self):
-        return self._money
+        return self.money
 
     def get_position(self):
-        return self._position
+        return self.position
 
     def get_movesInPrison(self):
-        return self._movesInPrison
+        return self.movesInPrison
 
     def get_IsActionRequired(self):
-        return self._IsActionRequired
+        return self.IsActionRequired
 
     def set_money(self, ammount):
-        _money = ammount
+        self.money = ammount
 
     def set_position(self, new_position):
-        _position = new_position
+        self.position = new_position
 
     def set_movesInPrison(self, moves):
-        _movesInPrison = moves
+        self.movesInPrison = moves
 
     def set_IsActionRequired(self, action):
-        _IsActionRequired = action
+        self.IsActionRequired = action
+
+    def DrawPlayer1(self, pos_num):
+        self.setPixmap(self.players_images[0])
+
+        if(pos_num == 0):
+            self.setPos(QPointF(650, 650))
+
+        if(pos_num == 1):
+            self.setPos(QPointF(475, 650))
+
+        if(pos_num == 2):
+            self.setPos(QPointF(300, 650))
+
+        if(pos_num == 3):
+            self.setPos(QPointF(125, 650))
+
+        if(pos_num == 4):
+            self.setPos(QPointF(125, 475))
+
+        if(pos_num == 5):
+            self.setPos(QPointF(125, 300))
+
+        if(pos_num == 6):
+            self.setPos(QPointF(125, 125))
+
+        if(pos_num == 7):
+            self.setPos(QPointF(300, 125))
+
+        if(pos_num == 8):
+            self.setPos(QPointF(475, 125))
+
+        if(pos_num == 9):
+            self.setPos(QPointF(650, 125))
+
+        if(pos_num == 10):
+            self.setPos(QPointF(650, 300))
+
+        if(pos_num == 11):
+            self.setPos(QPointF(650, 475))
+
+
+
+    def load_images(self):
+        self.players_images = []
+
+        for i in range(2):
+            n = QPixmap(QPixmap(os.path.join('../res','players/player%s.png' % (i + 1))))
+            self.players_images.append(n)
 
 class Dice(QGraphicsPixmapItem):
 
@@ -67,10 +119,11 @@ class Dice(QGraphicsPixmapItem):
 
         self.signals = Communicate()
 
-        self.numbers_images = []
         self.load_images()
 
     def load_images(self):
+        self.numbers_images = []
+
         for i in range(7):
             n = QPixmap(QPixmap(os.path.join('../res','dices/%s.png' % (i))))
             self.numbers_images.append(n)
@@ -85,9 +138,6 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        #Player init
-        self.player_1 = Player("somename", None, 200, 0, 0, False)
-        self.player_2 = Player("somename", None, 200, 0, 0, False)
 
         view = QGraphicsView()
         self.scene = QGraphicsScene()
@@ -110,22 +160,28 @@ class MainWindow(QMainWindow):
         self.scene.addItem(self.dice)
         self.dice.DrawDice(0)
 
+        #Player init
+        self.player_1 = Player()
+        self.player_2 = Player()
+
+        self.scene.addItem(self.player_1)
+        self.player_1.DrawPlayer1(0)
         #Players
         player1_sample_text = "Player1"+", color = "+"red"+"\n"+"$200"
-        self.player1 = QLabel(player1_sample_text)
-        self.player1.move(LEFT, TOP)
-        self.player1.resize(WIDTH, 40)
-        self.player1.setWordWrap(1)
-        self.player1.setAlignment(Qt.AlignCenter)
-        self.scene.addWidget(self.player1)
+        self.player1_banner = QLabel(player1_sample_text)
+        self.player1_banner.move(LEFT, TOP)
+        self.player1_banner.resize(WIDTH, 40)
+        self.player1_banner.setWordWrap(1)
+        self.player1_banner.setAlignment(Qt.AlignCenter)
+        self.scene.addWidget(self.player1_banner)
 
         player2_sample_text = "Player2"+", color = "+"blue"+"\n"+"$200"
-        self.player2 = QLabel(player2_sample_text)
-        self.player2.move(LEFT, TOP + 40 + DELIM)
-        self.player2.resize(WIDTH, 40)
-        self.player2.setWordWrap(1)
-        self.player2.setAlignment(Qt.AlignCenter)
-        self.scene.addWidget(self.player2)
+        self.player2_banner = QLabel(player2_sample_text)
+        self.player2_banner.move(LEFT, TOP + 40 + DELIM)
+        self.player2_banner.resize(WIDTH, 40)
+        self.player2_banner.setWordWrap(1)
+        self.player2_banner.setAlignment(Qt.AlignCenter)
+        self.scene.addWidget(self.player2_banner)
         #Game log
         log_sample_text = ("Vlados at position 1 : Toll station, pay 50$ to Phil\n"
                            "Vlados at position 1 : Toll station, pay 50$ to Phil\n"
@@ -164,6 +220,7 @@ class MainWindow(QMainWindow):
         self.button_yes.move(int(LEFT + WIDTH/2 + DELIM/2), TOP + 480 + DELIM*4)
         self.button_yes.resize(int((WIDTH - DELIM)/2), 50)
         self.scene.addWidget(self.button_yes)
+
         #Button for new move
         self.button_newMove = QPushButton("ROLL THE DICE")
         self.button_newMove.move(LEFT, TOP + 550 + DELIM*5 + 30)
@@ -186,7 +243,9 @@ class MainWindow(QMainWindow):
         #TODO Handle changes from etherium contract
         #TODO Check order of moves
         self.dice.DrawDice(randint(0, 6))
-
+        print(self.player_1.get_position())
+        self.player_1.set_position((self.player_1.get_position() + 1) % 12)
+        self.player_1.DrawPlayer1(self.player_1.get_position())
 
     def initGame(self, player_1, player_2):
         #TODO Handle starting game event from contract
