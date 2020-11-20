@@ -53,6 +53,9 @@ class Player(QGraphicsPixmapItem):
     def get_IsActionRequired(self):
         return self.IsActionRequired
 
+    def get_images(self):
+        return self.players_images
+
     def set_money(self, ammount):
         self.money = ammount
 
@@ -143,7 +146,6 @@ class Player(QGraphicsPixmapItem):
         if(pos_num == 11):
             self.setPos(QPointF(650, 415))
 
-
     def load_images(self):
         self.players_images = []
 
@@ -207,7 +209,7 @@ class MainWindow(QMainWindow):
         self.player_2.DrawPlayer2(0)
 
         #Players
-        player1_sample_text = USER_NAME+", color = "+"red"+"\n"+str(self.player_1.get_money())+"$"
+        player1_sample_text = self.player_1.get_name() + " " + str(self.player_1.get_money()) + "$"
         self.player1_banner = QLabel(player1_sample_text)
         self.player1_banner.move(LEFT, TOP)
         self.player1_banner.resize(WIDTH, 40)
@@ -215,13 +217,23 @@ class MainWindow(QMainWindow):
         self.player1_banner.setAlignment(Qt.AlignCenter)
         self.scene.addWidget(self.player1_banner)
 
-        player2_sample_text = "Player2"+", color = "+"green"+"\n"+str(self.player_2.get_money())+"$"
+        player2_sample_text = self.player_2.get_name() + " " + str(self.player_2.get_money()) + "$"
         self.player2_banner = QLabel(player2_sample_text)
         self.player2_banner.move(LEFT, TOP + 40 + DELIM)
         self.player2_banner.resize(WIDTH, 40)
         self.player2_banner.setWordWrap(1)
         self.player2_banner.setAlignment(Qt.AlignCenter)
         self.scene.addWidget(self.player2_banner)
+
+        self.player1_image = QGraphicsPixmapItem()
+        self.player1_image.setPixmap(self.player_1.get_images()[0].scaled(QSize(20, 20)))
+        self.player1_image.setPos(QPointF(900, 30))
+        self.scene.addItem(self.player1_image)
+
+        self.player2_image = QGraphicsPixmapItem()
+        self.player2_image.setPixmap(self.player_2.get_images()[1].scaled(QSize(20, 20)))
+        self.player2_image.setPos(QPointF(900, 80))
+        self.scene.addItem(self.player2_image)
 
         #Game log
         log_sample_text = ("Vlados at position 1 : Toll station, pay 50$ to Phil\n"
@@ -278,7 +290,7 @@ class MainWindow(QMainWindow):
 
         #Timer for handling events from contract
         self.timer = QTimer()
-        self.timer.setInterval(5)
+        self.timer.setInterval(1000)
         self.timer.timeout.connect(self.timer_handler)
         self.timer.start()
 
