@@ -243,6 +243,9 @@ class MainWindow(QMainWindow):
         self.log.setReadOnly(1)
         self.scene.addWidget(self.log)
 
+        self.log = QLabel("lol")
+        self.log.text()
+
         #Question
         question_sample_text = "Do you want to purchase avenue X?"
         self.question = QLabel(question_sample_text)
