@@ -6,6 +6,7 @@ import sys
 import os
 from random import randint
 import sys, getopt
+from client import Client
 
 WINDOW_WIDTH  = 950
 WINDOW_HEIGHT = 720
@@ -150,7 +151,7 @@ class Player(QGraphicsPixmapItem):
         self.players_images = []
 
         for i in range(2):
-            n = QPixmap(QPixmap(os.path.join('../res','players/player%s.png' % (i + 1))))
+            n = QPixmap(QPixmap(os.path.join('res','players/player%s.png' % (i + 1))))
             self.players_images.append(n)
 
 class Dice(QGraphicsPixmapItem):
@@ -164,7 +165,7 @@ class Dice(QGraphicsPixmapItem):
         self.numbers_images = []
 
         for i in range(7):
-            n = QPixmap(QPixmap(os.path.join('../res','dices/%s.png' % (i))))
+            n = QPixmap(QPixmap(os.path.join('res','dices/%s.png' % (i))))
             self.numbers_images.append(n)
 
     def DrawDice(self, number):
@@ -184,12 +185,12 @@ class MainWindow(QMainWindow):
         self.scene.setSceneRect(QRectF(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         #Filling the background
-        felt = QBrush(QPixmap(os.path.join('../res','background-pattern.png')))
+        felt = QBrush(QPixmap(os.path.join('res','background-pattern.png')))
         self.scene.setBackgroundBrush(felt)
 
         #Painting the field
         field = QGraphicsPixmapItem()
-        field.setPixmap(QPixmap(os.path.join('../res','field.png')))
+        field.setPixmap(QPixmap(os.path.join('res','field.png')))
         field.setPos(QPointF(10, 5))
         self.scene.addItem(field)
 
@@ -332,7 +333,7 @@ if __name__ == '__main__':
 
     #Handle cmdline arguments
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hc:u:n:",["contract-address=","user-address=","user-name="])
+        opts, args = getopt.getopt(sys.argv[1:],"hc:u:n:",["contract_address=","user_address=","user_name="])
     except getopt.GetoptError:
        print(HELPMSG)
        sys.exit(2)
@@ -340,11 +341,11 @@ if __name__ == '__main__':
        if opt == '-h':
           print(HELPMSG)
           sys.exit()
-       elif opt in ("-c", "--contract-address"):
+       elif opt in ("-c", "--contract_address"):
           CONTRACT_ADDRESS = arg
-       elif opt in ("-u", "--user-address"):
+       elif opt in ("-u", "--user_address"):
           USER_ADDRESS = arg
-       elif opt in ("-n", "--user-name"):
+       elif opt in ("-n", "--user_name"):
           USER_NAME = arg
     print("contract_address="+CONTRACT_ADDRESS)
     print("user_address="+USER_ADDRESS)
