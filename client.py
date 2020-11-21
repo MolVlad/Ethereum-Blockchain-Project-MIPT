@@ -36,18 +36,13 @@ class Client:
         tx_hash = self.contract.functions.enroll(self.clientName).transact()
         tx_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         
-        [getNumberSuccess, self.playerNumber] = self.contract.functions.getNumberOfYourPlayer().call()
+        self.playerNumber = self.contract.functions.getNumberOfPlayerByName(self.clientName).call()
 
         if verbose or self.verbose:
             print(self.clientName, "Enroll success:", enrollSuccess)
             print(self.clientName, "Enroll transact status:",tx_receipt.status)
             
-            if getNumberSuccess:
-                print(self.clientName, "Your player number", self.playerNumber)
-            else:
-                print(self.clientName, "Error while getting number of player")
-        
-        return getNumberSuccess and enrollSuccess
+        return (self.playerNumber != -1) and enrollSuccess
     
     def isGameActive(self, verbose=False):
         isActive = self.contract.functions.isGameActive().call()
@@ -121,9 +116,10 @@ class Client:
         maxNumber = self.contract.functions.getMaxNumberOfPlayers().call()
         for i in range(maxNumber):
             player = self.contract.functions.getPlayerByIndex(i).call()
-            players[player[1]]={"money":player[2], "position":player[3], "moves in prison":player[4]}
+            players[player[1]]={"money":player[2], "position":player[3], "moves in prison":player[4],
+                               "number":self.contract.functions.getNumberOfPlayerByName(player[1]).call()}
         return players     
-    
+
     def getPositions(self):
         positions = []
         numberOfPositions = self.contract.functions.getNumberOfStations().call()

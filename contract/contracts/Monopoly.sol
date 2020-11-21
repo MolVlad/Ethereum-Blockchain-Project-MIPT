@@ -72,17 +72,17 @@ contract Monopoly
 	}
 
 	// return number in blockchain base to access your player
-	function getNumberOfYourPlayer() public view returns (bool, uint8)
+	function getNumberOfPlayerByName(string memory name) public view returns (int8)
 	{
-		for (uint8 i=0; i<maxNumberOfPlayers; i++)
+		for (int8 i=0; uint8(i)<maxNumberOfPlayers; i++)
 		{
-			if (players[i].addr == msg.sender)
+            if (keccak256(bytes(players[uint8(i)].name)) == keccak256(bytes(name)))
 			{
-				return (true, i);
+				return i;
 			}
 		}
 
-		return (false, uint8(-1));
+		return int8(-1);
 	}
 
 	// has the game already started but not finished yet
@@ -268,12 +268,6 @@ contract Monopoly
 
 			string memory message = string(abi.encodePacked("Toll station, pay 50$ to ", players[stations[players[whoseMove].position].owner].name));
 			emit actionHappened(players[whoseMove].name, players[whoseMove].position, message);
-		}
-
-		if (players[whoseMove].money < 0)
-		{
-			gameIsActive = false;
-			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Finished his way (looooh, pi*or)");
 		}
 	}
 

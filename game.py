@@ -7,6 +7,7 @@ import os
 from random import randint
 import sys, getopt
 from client import Client
+import time
 
 WINDOW_WIDTH  = 950
 WINDOW_HEIGHT = 720
@@ -24,140 +25,107 @@ DELIM=10
 
 
 class Player(QGraphicsPixmapItem):
-    def __init__(self, *args, **kwargs):
-        super(Player, self).__init__(*args, **kwargs)
+    def __init__(self, name, money=200, position=0, movesInPrison=0, isActionRequired=False):
+        super().__init__()
 
-        self.name = "somename"
-        self.addr = None
-        self.money = 200
-        self.position = 0
-        self.movesInPrison = 0
-        self.IsActionRequired = False
+        self.name = name
+        self.money = money
+        self.position = position
 
         self.load_images();
-
-    def get_name(self):
-        return self.name
-
-    def get_addr(self):
-        return self.addr
-
-    def get_money(self):
-        return self.money
-
-    def get_position(self):
-        return self.position
-
-    def get_movesInPrison(self):
-        return self.movesInPrison
-
-    def get_IsActionRequired(self):
-        return self.IsActionRequired
 
     def get_images(self):
         return self.players_images
 
-    def set_money(self, ammount):
-        self.money = ammount
-
-    def set_position(self, new_position):
-        self.position = new_position
-
-    def set_movesInPrison(self, moves):
-        self.movesInPrison = moves
-
-    def set_IsActionRequired(self, action):
-        self.IsActionRequired = action
-
-    def DrawPlayer1(self, pos_num):
+    def DrawPlayer1(self):
         self.setPixmap(self.players_images[0])
 
-        if(pos_num == 0):
+        if(self.position == 0):
             self.setPos(QPointF(650, 650))
 
-        if(pos_num == 1):
+        if(self.position == 1):
             self.setPos(QPointF(475, 650))
 
-        if(pos_num == 2):
+        if(self.position == 2):
             self.setPos(QPointF(300, 650))
 
-        if(pos_num == 3):
+        if(self.position == 3):
             self.setPos(QPointF(125, 650))
 
-        if(pos_num == 4):
+        if(self.position == 4):
             self.setPos(QPointF(125, 475))
 
-        if(pos_num == 5):
+        if(self.position == 5):
             self.setPos(QPointF(125, 300))
 
-        if(pos_num == 6):
+        if(self.position == 6):
             self.setPos(QPointF(125, 125))
 
-        if(pos_num == 7):
+        if(self.position == 7):
             self.setPos(QPointF(300, 125))
 
-        if(pos_num == 8):
+        if(self.position == 8):
             self.setPos(QPointF(475, 125))
 
-        if(pos_num == 9):
+        if(self.position == 9):
             self.setPos(QPointF(650, 125))
 
-        if(pos_num == 10):
+        if(self.position == 10):
             self.setPos(QPointF(650, 300))
 
-        if(pos_num == 11):
+        if(self.position == 11):
             self.setPos(QPointF(650, 475))
 
-    def DrawPlayer2(self, pos_num):
+    def DrawPlayer2(self):
         self.setPixmap(self.players_images[1])
 
-        if(pos_num == 0):
+        if(self.position == 0):
             self.setPos(QPointF(650, 590))
 
-        if(pos_num == 1):
+        if(self.position == 1):
             self.setPos(QPointF(475, 590))
 
-        if(pos_num == 2):
+        if(self.position == 2):
             self.setPos(QPointF(300, 590))
 
-        if(pos_num == 3):
+        if(self.position == 3):
             self.setPos(QPointF(125, 590))
 
-        if(pos_num == 4):
+        if(self.position == 4):
             self.setPos(QPointF(125, 415))
 
-        if(pos_num == 5):
+        if(self.position == 5):
             self.setPos(QPointF(125, 240))
 
-        if(pos_num == 6):
+        if(self.position == 6):
             self.setPos(QPointF(125, 65))
 
-        if(pos_num == 7):
+        if(self.position == 7):
             self.setPos(QPointF(300, 65))
 
-        if(pos_num == 8):
+        if(self.position == 8):
             self.setPos(QPointF(475, 65))
 
-        if(pos_num == 9):
+        if(self.position == 9):
             self.setPos(QPointF(650, 65))
 
-        if(pos_num == 10):
+        if(self.position == 10):
             self.setPos(QPointF(650, 240))
 
-        if(pos_num == 11):
+        if(self.position == 11):
             self.setPos(QPointF(650, 415))
 
     def load_images(self):
         self.players_images = []
 
         for i in range(2):
-            n = QPixmap(QPixmap(os.path.join('res','players/player%s.png' % (i + 1))))
+            n = QPixmap(QPixmap(os.path.join('pictures','players/player%s.png' % (i + 1))))
             self.players_images.append(n)
 
 class Dice(QGraphicsPixmapItem):
 
     def __init__(self, *args, **kwargs):
-        super(Dice, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.load_images()
 
@@ -165,7 +133,7 @@ class Dice(QGraphicsPixmapItem):
         self.numbers_images = []
 
         for i in range(7):
-            n = QPixmap(QPixmap(os.path.join('res','dices/%s.png' % (i))))
+            n = QPixmap(QPixmap(os.path.join('pictures','dices/%s.png' % (i))))
             self.numbers_images.append(n)
 
     def DrawDice(self, number):
@@ -178,6 +146,13 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        #self.client=Client(CONTRACT_ADDRESS, USER_NAME, USER_ADDRESS, verbose=False)
+        #enroll = self.client.enrollGame()
+
+        #while not self.client.isGameActive():
+        #    print("Waiting another player")
+        #    time.sleep(1)
+
         view = QGraphicsView()
         self.scene = QGraphicsScene()
         view.setScene(self.scene)
@@ -185,32 +160,42 @@ class MainWindow(QMainWindow):
         self.scene.setSceneRect(QRectF(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         #Filling the background
-        felt = QBrush(QPixmap(os.path.join('res','background-pattern.png')))
+        felt = QBrush(QPixmap(os.path.join('pictures','background-pattern.png')))
         self.scene.setBackgroundBrush(felt)
 
         #Painting the field
         field = QGraphicsPixmapItem()
-        field.setPixmap(QPixmap(os.path.join('res','field.png')))
+        field.setPixmap(QPixmap(os.path.join('pictures','field.png')))
         field.setPos(QPointF(10, 5))
         self.scene.addItem(field)
 
         #Working with dice
         self.dice = Dice()
         self.scene.addItem(self.dice)
-        self.dice.DrawDice(0)
+        self.dice.DrawDice(6)
 
-        #Player init
-        self.player_1 = Player()
-        self.player_2 = Player()
+        #players = self.client.getPlayers()
+
+        #Player 1 init
+        #name = list(players.keys())[0]
+        #player = players[name]
+        #self.player_1 = Player(name, money=player['money'], position=player['position'])
+        self.player_1 = Player("somename")
+
+        #Player 2 init
+        #name = list(players.keys())[1]
+        #player = players[name]
+        #self.player_2 = Player(name, money=player['money'], position=player['position'])
+        self.player_2 = Player("somename")
 
         self.scene.addItem(self.player_1)
         self.scene.addItem(self.player_2)
 
-        self.player_1.DrawPlayer1(0)
-        self.player_2.DrawPlayer2(0)
+        self.player_1.DrawPlayer1()
+        self.player_2.DrawPlayer2()
 
         #Players
-        player1_sample_text = self.player_1.get_name() + " " + str(self.player_1.get_money()) + "$"
+        player1_sample_text = self.player_1.name + " " + str(self.player_1.money) + "$"
         self.player1_banner = QLabel(player1_sample_text)
         self.player1_banner.move(LEFT, TOP)
         self.player1_banner.resize(WIDTH, 40)
@@ -218,7 +203,7 @@ class MainWindow(QMainWindow):
         self.player1_banner.setAlignment(Qt.AlignCenter)
         self.scene.addWidget(self.player1_banner)
 
-        player2_sample_text = self.player_2.get_name() + " " + str(self.player_2.get_money()) + "$"
+        player2_sample_text = self.player_2.name + " " + str(self.player_2.money) + "$"
         self.player2_banner = QLabel(player2_sample_text)
         self.player2_banner.move(LEFT, TOP + 40 + DELIM)
         self.player2_banner.resize(WIDTH, 40)
@@ -319,17 +304,27 @@ class MainWindow(QMainWindow):
         self.dice.DrawDice(randint(0, 6))
 
         self.player_1.set_position((self.player_1.get_position() + 1) % 12)
-        self.player_1.DrawPlayer1(self.player_1.get_position())
+        self.player_1.DrawPlayer1()
 
         self.player_2.set_position((self.player_2.get_position() + 1) % 12)
-        self.player_2.DrawPlayer2(self.player_2.get_position())
+        self.player_2.DrawPlayer2()
 
     def initGame(self, player_1, player_2):
         #TODO Handle starting game event from contract
         #TODO Init vars of pl_1 and pl_2. pl_1 is our local player as default
         pass
 
+from os import environ
+
+def suppress_qt_warnings():
+    environ["QT_DEVICE_PIXEL_RATIO"] = "0"
+    environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    environ["QT_SCREEN_SCALE_FACTORS"] = "1"
+    environ["QT_SCALE_FACTOR"] = "1"
+
 if __name__ == '__main__':
+
+    suppress_qt_warnings()
 
     #Handle cmdline arguments
     try:
