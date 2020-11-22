@@ -317,7 +317,7 @@ class MainWindow(QMainWindow):
 
         #Timer for handling events from contract
         self.timer = QTimer()
-        self.timer.setInterval(800)
+        self.timer.setInterval(1500)
         self.timer.timeout.connect(self.timer_handler)
         self.timer.start()
 
@@ -345,7 +345,7 @@ class MainWindow(QMainWindow):
     def update_logs(self):
         new_logs = self.client.getLogs()
         for log in new_logs:
-            self.log_text = log + "\n\n" + self.log_text
+            self.log_text = self.log_text + "\n\n" + log 
 
         self.log.setPlainText(self.log_text)
 
