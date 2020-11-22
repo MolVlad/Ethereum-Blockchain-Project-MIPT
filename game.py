@@ -13,7 +13,7 @@ WINDOW_WIDTH  = 930
 WINDOW_HEIGHT = 720
 WINDOW_NAME = "MIPTopoly"
 
-HELPMSG='main.py --contract-address=<addr> --user-address=<uaddr> --user-name=<name>'
+HELPMSG='main.py --contract_address=<addr> --user_address=<uaddr> --user_name=<name>'
 CONTRACT_ADDRESS = ""
 USER_ADDRESS = ""
 USER_NAME = ""
@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
         enroll = self.client.enrollGame()
 
         while not self.client.isGameActive():
-            print("Waiting another player")
+            print("Waiting for another player")
             time.sleep(1)
 
         view = QGraphicsView()

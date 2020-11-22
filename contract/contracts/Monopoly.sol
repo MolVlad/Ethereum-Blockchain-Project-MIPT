@@ -283,7 +283,7 @@ contract Monopoly
         if (players[whoseMove].money < 0)
         {
             gameIsActive = false;
-            emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nFinished his way (looooh, pi*or)");
+            emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nFinished his way");
         }
 	}
 
