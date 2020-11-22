@@ -24,6 +24,7 @@ contract Monopoly
 	{
 		StationCondition condition;
 		uint8 owner;
+        string name;
 	}
 
 	mapping (uint => Player) players;
@@ -38,6 +39,13 @@ contract Monopoly
 		stations[7].condition = StationCondition.Available;
 		stations[8].condition = StationCondition.Available;
 		stations[11].condition = StationCondition.Available;
+
+		stations[1].name = "Avenue 1";
+		stations[2].name = "Avenue 2";
+		stations[5].name = "Avenue 3";
+		stations[7].name = "Avenue 4";
+		stations[8].name = "Avenue 5";
+		stations[11].name = "Avenue 6";
 	}
 
 	// ------------------------------------------ //
@@ -182,7 +190,9 @@ contract Monopoly
 				players[whoseMove].money = players[whoseMove].money - 200;
 				
 				emit stationBought(players[whoseMove].name, players[whoseMove].position);
-				emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Station is bought");
+
+			    string memory message = string(abi.encodePacked(stations[players[whoseMove].position].name, " is bought"));
+				emit actionHappened(players[whoseMove].name, players[whoseMove].position, message);
 			}
 		
 			players[whoseMove].canBuyStation = false;
@@ -217,24 +227,24 @@ contract Monopoly
 		// "go to prison" station
 		if (players[whoseMove].position == 9)
 		{
-			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Go to jail station");
+			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nGo to jail station");
 
 			players[whoseMove].position = 3;
-			players[whoseMove].movesInPrison = 3; // 3 more moves in prison
+			players[whoseMove].movesInPrison = 1; // next move is in prison
 		}
 
 		// go station, get 200$
 		if (players[whoseMove].position == 0) // "go" station
 		{
 			players[whoseMove].money += 200;
-			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "GO station, get 200$");
+			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nGO station, get 200$");
 		}
 
 		// luxury tax station, pay 100$
 		if (players[whoseMove].position == 4) // "luxury tax" station
 		{
 			players[whoseMove].money -= 100;
-			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Luxury tax station, pay 100$");
+			emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nLuxury tax station, pay 100$");
 		}
 
 		// chanse station, either get 100$ or pay 100$ or do nothing
@@ -247,16 +257,16 @@ contract Monopoly
 			if (action == 0)
 			{
 				players[whoseMove].money -= 100;
-				emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Chance station, that time pay 100$");
+				emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nChance station, that time pay 100$");
 			}
 			else if (action == 1)
 			{
 				players[whoseMove].money += 100;
-				emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Chance station, that time get 100$");
+				emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nChance station, that time get 100$");
 			}
 			else
 			{
-				emit actionHappened(players[whoseMove].name, players[whoseMove].position, "Chance station, that time do nothing");
+				emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nChance station, that time do nothing");
 			}
 		}
 	
@@ -266,9 +276,15 @@ contract Monopoly
 			players[whoseMove].money -= 50;
 			players[stations[players[whoseMove].position].owner].money += 50;
 
-			string memory message = string(abi.encodePacked("Toll station, pay 50$ to ", players[stations[players[whoseMove].position].owner].name));
+			string memory message = string(abi.encodePacked("\nToll station, pay 50$ to ", players[stations[players[whoseMove].position].owner].name));
 			emit actionHappened(players[whoseMove].name, players[whoseMove].position, message);
 		}
+
+        if (players[whoseMove].money < 0)
+        {
+            gameIsActive = false;
+            emit actionHappened(players[whoseMove].name, players[whoseMove].position, "\nFinished his way (looooh, pi*or)");
+        }
 	}
 
 	// check has this address already signed up for the game

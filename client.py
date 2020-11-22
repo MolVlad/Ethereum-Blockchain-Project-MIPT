@@ -126,17 +126,17 @@ class Client:
         players = self.getPlayers()
 
         for i in range(numberOfPositions):
-            [state, owner] = self.contract.functions.getStationByIndex(i).call()
+            [state, owner,name] = self.contract.functions.getStationByIndex(i).call()
             if state == 0:
-                positions.append(["None",""])
+                positions.append(["None","",name])
             if state == 1:
-                positions.append(["Available", ""])
+                positions.append(["Available", "",name])
             if state == 2:
-                positions.append(["Bought", self.contract.functions.getPlayerByIndex(owner).call()[1]])
+                positions.append(["Bought", self.contract.functions.getPlayerByIndex(owner).call()[1],name])
 
         return positions
     
-    def getLogs(self, verbose=True):
+    def getLogs(self, verbose=False):
         logs = []
         events = self.filterActionHappened.get_new_entries()
         
